@@ -158,12 +158,16 @@ export default function ActualizarEstadoScreen() {
       setEstado(firebaseStatus);
       setEstadoVisual(firebaseStatus);
 
-      Alert.alert("Éxito", `Estado actualizado a: ${nuevoEstado}`, [
-        {
-          text: "OK",
-          onPress: () => router.push("/(private)/(tabs)"),
-        },
-      ]);
+      Alert.alert(
+        "Éxito, Correo enviado",
+        `Estado actualizado a: ${nuevoEstado}`,
+        [
+          {
+            text: "OK",
+            onPress: () => router.push("/(private)/(tabs)"),
+          },
+        ]
+      );
     } catch (error) {
       console.error("Error al actualizar estado:", error);
       Alert.alert("Error", "No se pudo actualizar el estado");

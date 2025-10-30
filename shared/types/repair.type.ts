@@ -34,10 +34,10 @@ export type Repair = {
   finalCost: number;
   deliveryDate: Date | null;
   folio: string | null;
-  notes?: string; // se queda como estaba
+  notes?: string;
   signature?: string | null;
+  deliverySignature?: string | null; // ✅ nuevo campo
 
-  // 🔹 Nuevo campo: ahora pieces es un arreglo, no subcolección
   pieces: RepairPiece[];
 };
 
@@ -64,8 +64,8 @@ export const Repair = {
       folio: data.folio || null,
       notes: data.notes ?? "",
       signature: data.signature || null,
+      deliverySignature: data.deliverySignature || null, // ✅ nuevo campo
 
-      // 🔹 Ahora pieces se leen directamente del documento principal
       pieces:
         data.pieces?.map((piece: any) => ({
           id: piece.id,
@@ -97,8 +97,8 @@ export const Repair = {
       folio: repair.folio,
       notes: repair.notes ?? "",
       signature: repair.signature || null,
+      deliverySignature: repair.deliverySignature || null, // ✅ nuevo campo
 
-      // 🔹 Guardamos el arreglo de piezas directamente en el documento
       pieces: repair.pieces.map((piece) => ({
         id: piece.id,
         inventoryId: piece.inventoryId,

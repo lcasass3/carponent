@@ -202,30 +202,26 @@ const Details: React.FC = () => {
     );
   };
   const [scrollEnabled, setScrollEnabled] = useState(true);
+
   const handleUpdate = async () => {
     if (!notes.trim()) {
       Alert.alert(
         "Campo obligatorio",
         "Debes llenar el campo de notas antes de enviar."
       );
-      return; // sale de la función y no hace nada más
+      return;
     }
     try {
-      // Guardar notas
       await RepairsRepository.updateNotes(repairId, notes);
 
-      // Guardar piezas
+      // Guardar piezas (tu lógica actual)
       for (const part of parts) {
         if (!part.inventoryId) continue;
-
-        // Verificar si ya existe en Firestore
         const existingPiece = await RepairsRepository.findPieceByInventoryId(
           repairId,
           part.inventoryId
         );
-
         if (existingPiece) {
-          // Si ya existe y cambió la cantidad → actualizar
           if (existingPiece.quantity !== part.quantity) {
             await RepairsRepository.updatePieceQuantity(
               repairId,
@@ -234,7 +230,6 @@ const Details: React.FC = () => {
             );
           }
         } else {
-          // Si no existe → agregarla
           await RepairsRepository.addPieceToRepair(repairId, {
             name: part.name,
             quantity: part.quantity,
@@ -243,6 +238,10 @@ const Details: React.FC = () => {
           });
         }
       }
+
+      // Persistir el Total en estimatedCost
+      const estimated = Number(totalCost.toFixed(2));
+      await RepairsRepository.update(repairId, { estimatedCost: estimated });
 
       Alert.alert("Éxito", "El reporte se actualizó correctamente");
       router.push("/(private)/(tabs)");

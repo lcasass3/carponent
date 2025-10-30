@@ -286,7 +286,7 @@ export const getRepairCompletedEmailTemplate = (repair: Repair) => {
           repair.pieces && repair.pieces.length > 0
             ? `
         <div class="cost-row">
-          <span>Piezas (${repair.pieces.length} items)</span>
+          <span>Piezas (${repair.pieces.length} items): </span>
           <span>$${repair.pieces
             .reduce((acc, p) => acc + p.unitCost * p.quantity, 0)
             .toFixed(2)}</span>
@@ -296,7 +296,7 @@ export const getRepairCompletedEmailTemplate = (repair: Repair) => {
         }
         <div class="cost-total">
           <span>Total a pagar: </span>
-          <span class="cost-total-value">$${repair.finalCost.toFixed(2)}</span>
+          <span class="cost-total-value"> $${repair.estimatedCost.toFixed(2)}</span>
         </div>
       </div>
       `
