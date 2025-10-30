@@ -156,7 +156,7 @@ export default function EntregarEquipo() {
           Número de folio
         </Text>
         <TextInput
-          placeholder="Ej: REP-2025-001"
+          placeholder="Ej: 202001"
           placeholderTextColor="#9CA3AF"
           value={folio}
           onChangeText={setFolio}

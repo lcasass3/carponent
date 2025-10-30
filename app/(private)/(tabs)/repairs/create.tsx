@@ -41,6 +41,16 @@ type ChecklistKeys =
   | "pantallaNegra";
 //
 export default function AddEquipoForm() {
+  // 🔹 Helpers de validación
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
+  const isValidEmail = (s: string) => emailRegex.test(s.trim());
+  const isValidPhone10 = (s: string) => /^\d{10}$/.test(s);
+
+  // 🔹 Estado de errores
+  const [errors, setErrors] = useState<{ email?: string; telefono?: string }>(
+    {}
+  );
+
   const [form, setForm] = useState<FormData>({
     nombre: "",
     telefono: "",
@@ -70,6 +80,32 @@ export default function AddEquipoForm() {
 
       // Generar folio único de 6 dígitos
       const folio = Math.floor(100000 + Math.random() * 900000).toString();
+      // Validaciones obligatorias
+      if (!form.nombre || !form.marca || !form.modelo || !form.descripcion) {
+        Alert.alert(
+          "Campos incompletos",
+          "Por favor, llena todos los campos obligatorios."
+        );
+        return;
+      }
+
+      // Validación de teléfono (si ingresó algo, debe ser de 10 dígitos)
+      if (form.telefono && !isValidPhone10(form.telefono)) {
+        Alert.alert(
+          "Teléfono inválido",
+          "El teléfono debe tener exactamente 10 dígitos."
+        );
+        return;
+      }
+
+      // Validación de email (si ingresó algo, debe ser válido)
+      if (form.email && !isValidEmail(form.email)) {
+        Alert.alert(
+          "Correo inválido",
+          "Ingresa un correo con formato válido (ej. usuario@dominio.com)."
+        );
+        return;
+      }
 
       const newRepair = {
         customerName: form.nombre,
@@ -151,7 +187,37 @@ export default function AddEquipoForm() {
   const signatureRef = useRef<any>(null);
 
   const handleChange = (field: FormField, value: string) => {
-    setForm({ ...form, [field]: value });
+    let next = value;
+
+    if (field === "telefono") {
+      // Solo dígitos y tope a 10
+      next = value.replace(/\D/g, "").slice(0, 10);
+      setErrors((e) => ({
+        ...e,
+        telefono:
+          next.length === 0
+            ? undefined
+            : isValidPhone10(next)
+            ? undefined
+            : "Debe tener 10 dígitos",
+      }));
+    }
+
+    if (field === "email") {
+      // Quita espacios sobrantes
+      next = value.trim();
+      setErrors((e) => ({
+        ...e,
+        email:
+          next.length === 0
+            ? undefined
+            : isValidEmail(next)
+            ? undefined
+            : "Correo no válido",
+      }));
+    }
+
+    setForm((prev) => ({ ...prev, [field]: next }));
   };
 
   const handleOK = (signature: string) => {
@@ -173,12 +239,48 @@ export default function AddEquipoForm() {
       {
         text: "Sí",
         onPress: () => {
-          console.log("Formulario cancelado");
+          // 🔹 Limpiar todos los campos del formulario
+          setForm({
+            nombre: "",
+            telefono: "",
+            email: "",
+            marca: "",
+            modelo: "",
+            imei: "",
+            descripcion: "",
+          });
+
+          // 🔹 Reiniciar checklist
+          setChecklist({
+            aparatoMojado: false,
+            noEnciende: false,
+            seApagaSolo: false,
+            noCarga: false,
+            bateriaInflada: false,
+            seDescarga: false,
+            seReinicia: false,
+            pantallaRota: false,
+            pantallaManchas: false,
+            tactilNoResponde: false,
+            sinImagen: false,
+            rayasPantalla: false,
+            pantallaNegra: false,
+          });
+
+          // 🔹 Limpiar firma y canvas
+          setFirma(null);
+          signatureRef.current?.clearSignature?.();
+
+          // 🔹 Borrar errores de validación
+          setErrors({});
+
+          // 🔹 Regresar al inicio
           router.push("/(private)/(tabs)");
         },
       },
     ]);
   };
+
   //CAMBIO PARA AGREGAR CHECKLIST
   const [checklist, setChecklist] = useState<Record<ChecklistKeys, boolean>>({
     aparatoMojado: false,
