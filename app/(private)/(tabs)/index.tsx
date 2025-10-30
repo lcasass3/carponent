@@ -119,143 +119,150 @@ export default function HomeScreen() {
     setRefreshing(false);
   };
 
-  const renderRepairCard = ({ item }: { item: Repair }) => (
-    <Pressable className="mb-3">
-      <Card className="p-6 rounded-xl border-2">
-        {/* Header */}
-        <View className="flex-row justify-between items-start mb-3">
-          <View className="flex-1">
-            <Text className="text-lg font-extrabold">{item.customerName}</Text>
-            <Text className="text-sm text-typography-1000">{item.folio}</Text>
+  const renderRepairCard = ({ item }: { item: Repair }) => {
+    // 🔹 Flags reutilizables
+    const isLocked = item.status === "done" || item.status === "delivered";
+    const isDelivered = item.status === "delivered";
+
+    return (
+      <Pressable className="mb-3">
+        <Card className="p-6 rounded-xl border-2">
+          {/* Header */}
+          <View className="flex-row justify-between items-start mb-3">
+            <View className="flex-1">
+              <Text className="text-lg font-extrabold">
+                {item.customerName}
+              </Text>
+              <Text className="text-sm text-typography-1000">{item.folio}</Text>
+            </View>
+
+            {/* 🔒 Deshabilitar navegación a /repairs/status si delivered */}
+            <Pressable
+              disabled={isDelivered}
+              onPress={() => {
+                if (isTech && !isDelivered) {
+                  router.push({
+                    pathname: "/(private)/(tabs)/repairs/status",
+                    params: { repairId: item.id, currentStatus: item.status },
+                  });
+                }
+              }}
+              style={{ opacity: isDelivered ? 0.6 : 1 }}
+            >
+              <Badge
+                action={getStatusColor(item.status)}
+                variant="outline"
+                className={`ml-2 border-2 ${getStatusBadgeStyle(item.status)}`}
+              >
+                <Text
+                  className={`text-xs font-bold ${getStatusTextStyle(
+                    item.status
+                  )}`}
+                >
+                  {getStatusText(item.status)}
+                </Text>
+              </Badge>
+            </Pressable>
           </View>
 
-          <Pressable
-            onPress={() => {
-              if (isTech) {
-                router.push({
-                  pathname: "/(private)/(tabs)/repairs/status",
-                  params: {
-                    repairId: item.id,
-                    currentStatus: item.status,
-                  },
-                });
-              }
-            }}
-          >
-            <Badge
-              action={getStatusColor(item.status)}
-              variant="outline"
-              className={`ml-2 border-2 ${getStatusBadgeStyle(item.status)}`}
-            >
-              <Text
-                className={`text-xs font-bold ${getStatusTextStyle(
-                  item.status
-                )}`}
-              >
-                {getStatusText(item.status)}
-              </Text>
-            </Badge>
-          </Pressable>
-        </View>
-
-        {/* Device Info */}
-        <View className="mb-3">
-          <Text className="text-lg font-medium text-black mb-1">
-            {item.deviceModel}
-          </Text>
-          <Text className="text-md text-typography-800" numberOfLines={2}>
-            {item.issueDescription}
-          </Text>
-        </View>
-
-        {/* Footer con fecha y costo */}
-        <View className="flex-row justify-between items-center pt-3 border-t border-background-200">
-          <View className="flex-row items-center">
-            <Ionicons
-              name="calendar-outline"
-              size={20}
-              color="#6B7280"
-              style={{ marginRight: 4 }}
-            />
-            <Text className="text-md text-typography-600">
-              {item.createdAt.toLocaleDateString("es-MX")}
+          {/* Device Info */}
+          <View className="mb-3">
+            <Text className="text-lg font-medium text-black mb-1">
+              {item.deviceModel}
+            </Text>
+            <Text className="text-md text-typography-800" numberOfLines={2}>
+              {item.issueDescription}
             </Text>
           </View>
-          <Text
-            className="text-lg font-semibold text-#FFB74D"
-            style={{
-              textShadowColor: "#FFB74D",
-              textShadowOffset: { width: 0, height: 0 },
-              textShadowRadius: 5,
-            }}
-          >
-            $ {item.estimatedCost}
-          </Text>
-        </View>
 
-        {/* 🔹 BOTONES INFERIORES 🔹 */}
-        <View className="flex-row justify-between mt-4">
-          {isTech && (
-            <Button
-              action="secondary"
-              size="sm"
-              className="flex-1 mx-1"
+          {/* Footer con fecha y costo */}
+          <View className="flex-row justify-between items-center pt-3 border-t border-background-200">
+            <View className="flex-row items-center">
+              <Ionicons
+                name="calendar-outline"
+                size={20}
+                color="#6B7280"
+                style={{ marginRight: 4 }}
+              />
+              <Text className="text-md text-typography-600">
+                {item.createdAt.toLocaleDateString("es-MX")}
+              </Text>
+            </View>
+            <Text
+              className="text-lg font-semibold text-#FFB74D"
               style={{
-                backgroundColor: item.status === "done" ? "#BDBDBD" : "#FFB74D",
-                opacity: item.status === "done" ? 0.6 : 1,
-              }}
-              onPress={() => {
-                //  Evita completamente la navegación si está en "done"
-                if (item.status === "done") return;
-                router.push({
-                  pathname: "/(private)/(tabs)/repairs/details",
-                  params: { repairId: item.id },
-                });
+                textShadowColor: "#FFB74D",
+                textShadowOffset: { width: 0, height: 0 },
+                textShadowRadius: 5,
               }}
             >
-              <ButtonText className="text-white font-semibold">
-                Modificar
-              </ButtonText>
-            </Button>
-          )}
+              $ {item.estimatedCost}
+            </Text>
+          </View>
 
-          {/* Botón Ver */}
-          <Button
-            action="secondary"
-            size="sm"
-            className="flex-1 mx-1 bg-gray-500"
-            onPress={() =>
-              router.push({
-                pathname: "/(private)/(tabs)/repairs/detailsview",
-                params: { repairId: item.id },
-              })
-            }
-          >
-            <ButtonText className="text-white font-semibold">Ver</ButtonText>
-          </Button>
+          {/* 🔹 BOTONES INFERIORES 🔹 */}
+          <View className="flex-row justify-between mt-4">
+            {isTech && (
+              <Button
+                action="secondary"
+                size="sm"
+                className="flex-1 mx-1"
+                style={{
+                  backgroundColor: isLocked ? "#BDBDBD" : "#FFB74D",
+                  opacity: isLocked ? 0.6 : 1,
+                }}
+                onPress={() => {
+                  if (isLocked) return; // 🔒 bloquea
+                  router.push({
+                    pathname: "/(private)/(tabs)/repairs/details",
+                    params: { repairId: item.id },
+                  });
+                }}
+              >
+                <ButtonText className="text-white font-semibold">
+                  Modificar
+                </ButtonText>
+              </Button>
+            )}
 
-          {isAdmin && item.status === "done" && (
+            {/* Botón Ver */}
             <Button
               action="secondary"
               size="sm"
-              className="flex-1 mx-1"
-              style={{ backgroundColor: "#FFB74D" }}
+              className="flex-1 mx-1 bg-gray-500"
               onPress={() =>
                 router.push({
-                  pathname: "/(private)/(tabs)/repairs/delivery",
+                  pathname: "/(private)/(tabs)/repairs/detailsview",
                   params: { repairId: item.id },
                 })
               }
             >
-              <ButtonText className="text-white font-semibold">
-                Entregar
-              </ButtonText>
+              <ButtonText className="text-white font-semibold">Ver</ButtonText>
             </Button>
-          )}
-        </View>
-      </Card>
-    </Pressable>
-  );
+
+            {isAdmin && item.status === "done" && (
+              <Button
+                action="secondary"
+                size="sm"
+                className="flex-1 mx-1"
+                style={{ backgroundColor: "#FFB74D" }}
+                onPress={() =>
+                  router.push({
+                    pathname: "/(private)/(tabs)/repairs/delivery",
+                    params: { repairId: item.id },
+                  })
+                }
+              >
+                <ButtonText className="text-white font-semibold">
+                  Entregar
+                </ButtonText>
+              </Button>
+            )}
+          </View>
+        </Card>
+      </Pressable>
+    );
+  };
 
   return (
     <View className="flex-1" style={{ backgroundColor: "#193456" }}>

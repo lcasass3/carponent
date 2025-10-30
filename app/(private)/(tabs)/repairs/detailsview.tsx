@@ -232,9 +232,9 @@ export default function DetallesEquipoView() {
           Firma de equipo entregado
         </Text>
         <View className="w-full border border-background-200 rounded-xl bg-background-50 p-3 items-center">
-          {repair.signature ? (
+          {repair.deliverySignature ? (
             <Image
-              source={{ uri: `data:image/png;base64,${repair.signature}` }}
+              source={{ uri: `${repair.deliverySignature}` }}
               style={{ width: "100%", height: 120, resizeMode: "contain" }}
             />
           ) : (
