@@ -88,6 +88,7 @@ export default function AddEquipoForm() {
         deliveryDate: null,
         folio: folio,
         signature: firma || null,
+        pieces: [],
       };
 
       const repairId = await RepairsRepository.create(newRepair);

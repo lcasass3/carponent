@@ -8,13 +8,6 @@ export type RepairStatus =
   | "not_repaired"
   | "delivered";
 
-export type RepairNote = {
-  id: string;
-  authorId: string;
-  text: string;
-  createdAt: Date;
-};
-
 export type RepairPiece = {
   id: string;
   inventoryId: string | null;
@@ -41,8 +34,11 @@ export type Repair = {
   finalCost: number;
   deliveryDate: Date | null;
   folio: string | null;
-  notes?: string; //campo opcional para notas
+  notes?: string; // se queda como estaba
   signature?: string | null;
+
+  // 🔹 Nuevo campo: ahora pieces es un arreglo, no subcolección
+  pieces: RepairPiece[];
 };
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
@@ -66,8 +62,19 @@ export const Repair = {
       finalCost: data.finalCost,
       deliveryDate: data.deliveryDate ? data.deliveryDate.toDate() : null,
       folio: data.folio || null,
-      notes: data.notes ?? "", // ahora sí lee el campo notes del documento
+      notes: data.notes ?? "",
       signature: data.signature || null,
+
+      // 🔹 Ahora pieces se leen directamente del documento principal
+      pieces:
+        data.pieces?.map((piece: any) => ({
+          id: piece.id,
+          inventoryId: piece.inventoryId || null,
+          name: piece.name,
+          quantity: piece.quantity,
+          unitCost: piece.unitCost,
+          addedAt: piece.addedAt.toDate(),
+        })) || [],
     };
   },
 
@@ -88,8 +95,18 @@ export const Repair = {
       finalCost: repair.finalCost,
       deliveryDate: repair.deliveryDate,
       folio: repair.folio,
-      notes: repair.notes ?? "", //también lo agregamos al guardar
+      notes: repair.notes ?? "",
       signature: repair.signature || null,
+
+      // 🔹 Guardamos el arreglo de piezas directamente en el documento
+      pieces: repair.pieces.map((piece) => ({
+        id: piece.id,
+        inventoryId: piece.inventoryId,
+        name: piece.name,
+        quantity: piece.quantity,
+        unitCost: piece.unitCost,
+        addedAt: piece.addedAt,
+      })),
     };
   },
 };

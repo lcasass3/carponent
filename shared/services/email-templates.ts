@@ -268,7 +268,7 @@ export const getRepairCompletedEmailTemplate = (repair: Repair) => {
 
       <!-- Cost Section -->
       ${
-        repair.finalCost > 0
+        repair.estimatedCost > 0
           ? `
       <div class="cost-section">
         <div class="cost-title">💰 Resumen de Costos</div>
@@ -276,7 +276,7 @@ export const getRepairCompletedEmailTemplate = (repair: Repair) => {
           repair.estimatedCost > 0
             ? `
         <div class="cost-row">
-          <span>Mano de obra</span>
+          <span>Mano de obra: </span>
           <span>$${repair.estimatedCost.toFixed(2)}</span>
         </div>
         `
@@ -295,7 +295,7 @@ export const getRepairCompletedEmailTemplate = (repair: Repair) => {
             : ""
         }
         <div class="cost-total">
-          <span>Total a pagar</span>
+          <span>Total a pagar: </span>
           <span class="cost-total-value">$${repair.finalCost.toFixed(2)}</span>
         </div>
       </div>
@@ -321,18 +321,14 @@ export const getRepairCompletedEmailTemplate = (repair: Repair) => {
       <div class="note" style="background-color: #FFF7ED; border-left-color: #FFB74D;">
         <div class="note-title" style="color: #92400E;">💬 Notas del Técnico</div>
         <div class="note-text" style="color: #92400E;">
-          ${repair.notes[repair.notes.length - 1].text}
+          ${repair.notes}
         </div>
       </div>
       `
           : ""
       }
 
-      <div class="cta-container">
-        <a href="tel:+1234567890" class="cta-button">
-          📞 Llamar para Coordinar
-        </a>
-      </div>
+      
 
       <p style="font-size: 14px; color: #6B7280; text-align: center; margin-top: 24px;">
         Si tienes alguna pregunta, no dudes en contactarnos. ¡Gracias por confiar en nosotros!

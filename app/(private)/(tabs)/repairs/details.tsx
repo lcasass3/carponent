@@ -257,7 +257,7 @@ const Details: React.FC = () => {
       className="flex-1 bg-background-50 p-5"
       style={{ backgroundColor: "#193456" }}
       scrollEnabled={scrollEnabled}
-      contentContainerStyle={{ paddingBottom: 120 }}
+      contentContainerStyle={{ paddingBottom: 300 }}
     >
       <View
         className=" bg-background-50 rounded-2xl p-5 border border  shadow-sm border-4"

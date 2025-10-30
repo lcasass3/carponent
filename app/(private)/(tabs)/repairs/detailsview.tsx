@@ -16,14 +16,12 @@ export default function DetallesEquipoView() {
     const fetchRepairData = async () => {
       try {
         // Obtener datos principales de la reparación
+        // Obtener datos principales de la reparación (ya incluye las piezas)
         const repairData = await RepairsRepository.getById(repairId);
         if (!repairData) return;
 
-        // Obtener piezas relacionadas
-        const repairPieces = await RepairsRepository.getPieces(repairId);
-
         setRepair(repairData);
-        setPieces(repairPieces);
+        setPieces(repairData.pieces || []); // ahora se toman directamente del objeto
       } catch (error) {
         console.error("Error al cargar los datos de la reparación:", error);
       } finally {
