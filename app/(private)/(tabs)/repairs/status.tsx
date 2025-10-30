@@ -1,11 +1,11 @@
 import { Button, ButtonText } from "@/shared/components/ui/button";
 import { RepairsRepository } from "@/shared/repositories/repairs.repository";
+import { EmailService } from "@/shared/services/email.service";
 import { RepairStatus } from "@/shared/types/repair.type";
 import { Picker } from "@react-native-picker/picker";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { Alert, Image, ScrollView, Text, View } from "react-native";
-
 // Definir tipos para los mapeos
 type DisplayStatus =
   | "Revisión"
@@ -122,9 +122,39 @@ export default function ActualizarEstadoScreen() {
       console.log("Actualizando reparación:", repairIdString);
       console.log("Nuevo estado:", firebaseStatus);
 
+      const previousStatus = estado;
+
+      // Actualizar en Firebase
       await RepairsRepository.updateStatus(repairIdString, firebaseStatus);
 
-      // Actualizar el estado local inmediatamente
+      // === Enviar correo al cliente ===
+      try {
+        if (firebaseStatus === "done") {
+          // Enviar email de reparación completada
+          await EmailService.sendRepairCompletedEmail({
+            ...repairData,
+            status: firebaseStatus,
+            updatedAt: new Date(),
+          });
+        } else {
+          // Enviar email de cambio de estado general
+          await EmailService.sendStatusChangeEmail(
+            {
+              ...repairData,
+              status: firebaseStatus,
+              updatedAt: new Date(),
+            },
+            previousStatus,
+            firebaseStatus
+          );
+        }
+
+        console.log("Correo enviado exitosamente");
+      } catch (emailError) {
+        console.error("Error al enviar correo:", emailError);
+      }
+
+      // Actualizar estado local
       setEstado(firebaseStatus);
       setEstadoVisual(firebaseStatus);
 

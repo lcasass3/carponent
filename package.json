@@ -13,6 +13,7 @@
   "dependencies": {
     "@expo/html-elements": "^0.12.5",
     "@expo/vector-icons": "^15.0.2",
+    "@getbrevo/brevo": "^3.0.1",
     "@gluestack-ui/core": "^3.0.2",
     "@gluestack-ui/icon": "^0.1.27",
     "@gluestack-ui/nativewind-utils": "^1.0.26",

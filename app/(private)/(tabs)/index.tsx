@@ -121,7 +121,7 @@ export default function HomeScreen() {
 
   const renderRepairCard = ({ item }: { item: Repair }) => (
     <Pressable className="mb-3">
-      <Card className="p-6 rounded-xl border-4">
+      <Card className="p-6 rounded-xl border-2">
         {/* Header */}
         <View className="flex-row justify-between items-start mb-3">
           <View className="flex-1">
@@ -182,13 +182,15 @@ export default function HomeScreen() {
             </Text>
           </View>
           <Text
-            className="text-lg font-semibold text-primary-600"
+            className="text-lg font-semibold text-#FFB74D"
             style={{
-              textShadowColor: "#008f39",
+              textShadowColor: "#FFB74D",
               textShadowOffset: { width: 0, height: 0 },
               textShadowRadius: 5,
             }}
-          ></Text>
+          >
+            $ {item.estimatedCost}
+          </Text>
         </View>
 
         {/* 🔹 BOTONES INFERIORES 🔹 */}
@@ -278,7 +280,8 @@ export default function HomeScreen() {
           </View>
           <View className="relative">
             <Pressable
-              className="w-10 h-10 bg-primary-500 rounded-full items-center justify-center"
+              className="w-10 h-10  rounded-full items-center justify-center"
+              style={{ backgroundColor: "#FFB74D" }}
               onPress={() => setIsMenuOpen(!isMenuOpen)}
             >
               <Text className="text-white font-bold text-lg">
@@ -323,17 +326,10 @@ export default function HomeScreen() {
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           <View className="flex-row space-x-4">
             <View
-              className="bg-background-0 px-4 py-3 rounded-lg border-4 min-w-[110px]"
+              className="bg-background-0 px-4 py-3 rounded-lg border-2 min-w-[110px]"
               style={{ marginRight: 8 }}
             >
-              <Text
-                className="text-3xl font-bold text-warning-600 text-center"
-                style={{
-                  textShadowColor: "#F59E0B",
-                  textShadowOffset: { width: 0, height: 0 },
-                  textShadowRadius: 10,
-                }}
-              >
+              <Text className="text-3xl font-bold text-warning-600 text-center">
                 {statusCounts.repairing || 0}
               </Text>
               <Text
@@ -344,17 +340,10 @@ export default function HomeScreen() {
               </Text>
             </View>
             <View
-              className="bg-background-0 px-4 py-3 rounded-lg border-4 min-w-[110px]"
+              className="bg-background-0 px-4 py-3 rounded-lg border-2 min-w-[110px]"
               style={{ marginRight: 8 }}
             >
-              <Text
-                className="text-3xl font-bold text-info-600 text-center"
-                style={{
-                  textShadowColor: "#3B82F6",
-                  textShadowOffset: { width: 0, height: 0 },
-                  textShadowRadius: 10,
-                }}
-              >
+              <Text className="text-3xl font-bold text-info-600 text-center">
                 {statusCounts.in_review || 0}
               </Text>
               <Text
@@ -365,17 +354,10 @@ export default function HomeScreen() {
               </Text>
             </View>
             <View
-              className="bg-background-0 px-4 py-3 rounded-lg border-4 min-w-[110px]"
+              className="bg-background-0 px-4 py-3 rounded-lg border-2 min-w-[110px]"
               style={{ marginRight: 8 }}
             >
-              <Text
-                className="text-3xl font-bold text-success-600 text-center"
-                style={{
-                  textShadowColor: "#10B981",
-                  textShadowOffset: { width: 0, height: 0 },
-                  textShadowRadius: 10,
-                }}
-              >
+              <Text className="text-3xl font-bold text-success-600 text-center">
                 {statusCounts.done || 0}
               </Text>
               <Text
@@ -386,17 +368,10 @@ export default function HomeScreen() {
               </Text>
             </View>
             <View
-              className="bg-background-0 px-4 py-3 rounded-lg border-4 min-w-[110px]"
+              className="bg-background-0 px-4 py-3 rounded-lg border-2 min-w-[110px]"
               style={{ marginRight: 8 }}
             >
-              <Text
-                className="text-3xl font-bold text-typography-500 text-center"
-                style={{
-                  textShadowColor: "#6B7280",
-                  textShadowOffset: { width: 0, height: 0 },
-                  textShadowRadius: 10,
-                }}
-              >
+              <Text className="text-3xl font-bold text-typography-500 text-center">
                 {statusCounts.waiting_parts || 0}
               </Text>
               <Text
@@ -436,7 +411,7 @@ export default function HomeScreen() {
 
         {/* Search Bar */}
         <View
-          className="relative  rounded-xl border-4"
+          className="relative  rounded-xl border-2"
           style={{ borderColor: "#FFB74D" }}
         >
           <Input variant="outline" size="md" className="bg-white rounded-lg">
