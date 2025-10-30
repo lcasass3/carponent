@@ -58,13 +58,8 @@ export function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
       ]}
     >
       {state.routes.map((route, index) => {
-        const isTech = userRole === "tech";
-        const isAdmin = userRole === "admin";
-        
+        if (route.name === "repairs") return null;
 
-        if (route.name === "repairs" && isTech) {
-          return null; 
-        }
         const { options } = descriptors[route.key];
         const label =
           options.tabBarLabel !== undefined
