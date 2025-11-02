@@ -1,14 +1,13 @@
 import { Repair } from "../types/repair.type";
 import { BrevoAPI, BrevoEmailRequest } from "./brevo";
 import {
-    getRepairCompletedEmailTemplate,
-    getStatusChangeEmailTemplate,
+  getRepairCompletedEmailTemplate,
+  getStatusChangeEmailTemplate,
 } from "./email-templates";
 
 export class EmailService {
   private static readonly FROM_NAME = "Reparaciones Fix Track";
-  private static readonly FROM_EMAIL =
-    process.env.EXPO_PUBLIC_FROM_EMAIL || "your-email@gmail.com";
+  private static readonly FROM_EMAIL = "keviin.valerio04@gmail.com";
 
   /**
    * Send email notification when repair is completed
