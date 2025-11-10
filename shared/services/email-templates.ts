@@ -607,3 +607,289 @@ export const getStatusChangeEmailTemplate = (
 </html>
   `;
 };
+
+export const getDeliveryConfirmationEmailTemplate = (repair: Repair) => {
+  const formattedDeliveryDate = repair.deliveryDate
+    ? new Date(repair.deliveryDate).toLocaleDateString("es-MX", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      })
+    : new Date().toLocaleDateString("es-MX", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+
+  const totalCost = repair.finalCost || repair.estimatedCost;
+
+  return `
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Entrega Confirmada</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', sans-serif;
+      line-height: 1.6;
+      color: #1F2937;
+      background-color: #F9FAFB;
+    }
+    .email-container {
+      max-width: 600px;
+      margin: 0 auto;
+      background-color: #FFFFFF;
+    }
+    .header {
+      background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+      padding: 40px 30px;
+      text-align: center;
+    }
+    .header-icon {
+      width: 80px;
+      height: 80px;
+      background-color: rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+      font-size: 40px;
+    }
+    .header-title {
+      color: #FFFFFF;
+      font-size: 28px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    .header-subtitle {
+      color: rgba(255, 255, 255, 0.95);
+      font-size: 16px;
+    }
+    .content {
+      padding: 40px 30px;
+    }
+    .greeting {
+      font-size: 18px;
+      color: #1F2937;
+      margin-bottom: 20px;
+    }
+    .message {
+      font-size: 16px;
+      color: #4B5563;
+      margin-bottom: 30px;
+      line-height: 1.8;
+    }
+    .info-card {
+      background: linear-gradient(135deg, #F0FDF4 0%, #DCFCE7 100%);
+      border: 2px solid #10B981;
+      border-radius: 12px;
+      padding: 24px;
+      margin: 24px 0;
+    }
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(16, 185, 129, 0.2);
+    }
+    .info-row:last-child {
+      border-bottom: none;
+    }
+    .info-label {
+      font-weight: 600;
+      color: #047857;
+      font-size: 14px;
+    }
+    .info-value {
+      color: #1F2937;
+      font-size: 15px;
+      font-weight: 500;
+    }
+    .cost-card {
+      background-color: #F9FAFB;
+      border: 2px solid #E5E7EB;
+      border-radius: 12px;
+      padding: 24px;
+      margin: 24px 0;
+    }
+    .cost-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #1F2937;
+      margin-bottom: 16px;
+      text-align: center;
+    }
+    .cost-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      color: #4B5563;
+      font-size: 15px;
+    }
+    .cost-total {
+      display: flex;
+      justify-content: space-between;
+      padding: 16px 0;
+      margin-top: 12px;
+      border-top: 2px solid #10B981;
+      font-size: 18px;
+      font-weight: bold;
+      color: #1F2937;
+    }
+    .thank-you-box {
+      background: linear-gradient(135deg, #DBEAFE 0%, #BFDBFE 100%);
+      border-left: 4px solid #3B82F6;
+      border-radius: 8px;
+      padding: 20px;
+      margin: 24px 0;
+    }
+    .thank-you-text {
+      color: #1F2937;
+      font-size: 15px;
+      line-height: 1.6;
+      margin: 0;
+    }
+    .footer {
+      background-color: #F9FAFB;
+      padding: 30px;
+      text-align: center;
+      border-top: 2px solid #E5E7EB;
+    }
+    .footer-text {
+      color: #6B7280;
+      font-size: 13px;
+      margin: 5px 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="email-container">
+    <div class="header">
+      <div class="header-icon">✅</div>
+      <h1 class="header-title">¡Entrega Confirmada!</h1>
+      <p class="header-subtitle">Tu equipo ha sido entregado exitosamente</p>
+    </div>
+    
+    <div class="content">
+      <p class="greeting">Hola ${repair.customerName},</p>
+      
+      <p class="message">
+        Confirmamos que tu <strong>${
+          repair.deviceModel
+        }</strong> ha sido entregado exitosamente 
+        el día <strong>${formattedDeliveryDate}</strong>. Esperamos que tu equipo esté funcionando 
+        perfectamente.
+      </p>
+
+      <div class="info-card">
+        <div class="info-row">
+          <span class="info-label">📋 Folio</span>
+          <span class="info-value">${repair.folio || "N/A"}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">📱 Dispositivo</span>
+          <span class="info-value">${repair.deviceModel}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">📅 Fecha de Entrega</span>
+          <span class="info-value">${formattedDeliveryDate}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">✅ Estado</span>
+          <span class="info-value">Entregado</span>
+        </div>
+      </div>
+
+      ${
+        totalCost > 0
+          ? `
+      <div class="cost-card">
+        <h3 class="cost-title">💰 Resumen de Pago</h3>
+        ${
+          repair.pieces && repair.pieces.length > 0
+            ? `
+        <div class="cost-row">
+          <span>Mano de obra</span>
+          <span>$${repair.estimatedCost.toFixed(2)}</span>
+        </div>
+        ${repair.pieces
+          .map(
+            (piece) => `
+        <div class="cost-row">
+          <span>${piece.name} (x${piece.quantity})</span>
+          <span>$${(piece.unitCost * piece.quantity).toFixed(2)}</span>
+        </div>
+        `
+          )
+          .join("")}
+        `
+            : `
+        <div class="cost-row">
+          <span>Costo del servicio</span>
+          <span>$${totalCost.toFixed(2)}</span>
+        </div>
+        `
+        }
+        <div class="cost-total">
+          <span>Total Pagado</span>
+          <span>$${totalCost.toFixed(2)}</span>
+        </div>
+      </div>
+      `
+          : ""
+      }
+
+      <div class="thank-you-box">
+        <p class="thank-you-text">
+          <strong>¡Gracias por confiar en nosotros!</strong><br>
+          Esperamos que estés satisfecho con nuestro servicio. Si tienes algún problema 
+          o pregunta sobre tu equipo, no dudes en contactarnos.
+        </p>
+      </div>
+
+      ${
+        repair.notes && repair.notes.length > 0
+          ? `
+      <div style="background-color: #FEF3C7; border-left: 4px solid #F59E0B; border-radius: 8px; padding: 20px; margin: 24px 0;">
+        <h3 style="color: #92400E; font-size: 16px; margin-bottom: 12px;">📝 Notas Finales</h3>
+        ${repair.notes
+          .map(
+            (note) => `
+        <p style="color: #78350F; font-size: 14px; margin: 8px 0;">${note.text}</p>
+        `
+          )
+          .join("")}
+      </div>
+      `
+          : ""
+      }
+
+      <p style="text-align: center; color: #6B7280; font-size: 14px; margin-top: 32px;">
+        Guarda este correo como comprobante de entrega
+      </p>
+    </div>
+
+    <div class="footer">
+      <p class="footer-text">Este correo fue enviado automáticamente desde nuestro sistema de gestión de reparaciones.</p>
+      <p class="footer-text">
+        © ${new Date().getFullYear()} FixTrack. Todos los derechos reservados.
+      </p>
+    </div>
+  </div>
+</body>
+</html>
+  `;
+};

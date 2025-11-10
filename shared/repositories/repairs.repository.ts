@@ -33,6 +33,26 @@ export class RepairsRepository {
     return null;
   }
 
+  static async getByFolio(folio: string): Promise<Repair | null> {
+    try {
+      const q = query(
+        collection(db, "repairs"),
+        where("folio", "==", folio.toUpperCase()),
+        limit(1)
+      );
+      const snapshot = await getDocs(q);
+
+      if (snapshot.empty) {
+        return null;
+      }
+
+      return Repair.fromFirestore(snapshot.docs[0]);
+    } catch (error) {
+      console.error("Error getting repair by folio:", error);
+      throw error;
+    }
+  }
+
   static async getByStatus(status: RepairStatus): Promise<Repair[]> {
     const snapshot = await getDocs(
       query(
@@ -90,6 +110,18 @@ export class RepairsRepository {
 
   static async updateStatus(id: string, status: RepairStatus): Promise<void> {
     await this.update(id, { status });
+  }
+
+  static async markAsDelivered(repairId: string): Promise<void> {
+    try {
+      await this.update(repairId, {
+        status: "delivered",
+        deliveryDate: new Date(),
+      });
+    } catch (error) {
+      console.error("Error marking repair as delivered:", error);
+      throw error;
+    }
   }
 
   static async addNote(
