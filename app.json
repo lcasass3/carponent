@@ -16,7 +16,8 @@
         "foregroundImage": "./assets/icons/logo.svg",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "package": "com.lcasass3.fixtrack"
     },
     "web": {
       "bundler": "metro",
@@ -37,6 +38,12 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "cfb953f2-41f8-4904-9be6-f682d3f8cf57"
+      }
     }
   }
 }
