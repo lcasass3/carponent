@@ -205,7 +205,7 @@ export default function RepairsScreen() {
             </Text>
           </View>
           <Text className="text-lg font-bold text-primary-600">
-            ${item.estimatedCost.toLocaleString("es-MX")}
+            ${item.finalCost.toLocaleString("es-MX")}
           </Text>
         </View>
 

@@ -6,6 +6,7 @@ import { Badge } from "@/shared/components/ui/badge";
 import { Button, ButtonText } from "@/shared/components/ui/button";
 import { Card } from "@/shared/components/ui/card";
 import { RepairsRepository } from "@/shared/repositories/repairs.repository";
+import { EmailService } from "@/shared/services/email.service";
 import { Repair, RepairStatus } from "@/shared/types/repair.type";
 import { Ionicons } from "@expo/vector-icons";
 import { Picker } from "@react-native-picker/picker";
@@ -154,12 +155,45 @@ export default function ActualizarEstadoScreen() {
 
     try {
       setUpdating(true);
+      const previousStatus = repair.status;
+
+      // Update status in database
       await RepairsRepository.updateStatus(repair.id, newStatus);
+
+      // Send email notifications
+      try {
+        if (newStatus === "done") {
+          // Send special "repair completed" email
+          await EmailService.sendRepairCompletedEmail({
+            ...repair,
+            status: newStatus,
+            updatedAt: new Date(),
+          });
+        } else {
+          // Send general status change notification
+          await EmailService.sendStatusChangeEmail(
+            {
+              ...repair,
+              status: newStatus,
+              updatedAt: new Date(),
+            },
+            previousStatus,
+            newStatus
+          );
+        }
+      } catch (emailError) {
+        // Log email error but don't fail the status update
+        console.error("Error sending email notification:", emailError);
+        // Optionally show a warning to user
+        console.warn("Status updated but email notification failed");
+      }
 
       setAlertConfig({
         visible: true,
         type: "success",
-        message: `Estado actualizado a "${getStatusText(newStatus)}"`,
+        message: `Estado actualizado a "${getStatusText(newStatus)}"${
+          newStatus === "done" ? " - Email enviado al cliente" : ""
+        }`,
       });
 
       // Reload repair data
@@ -168,7 +202,7 @@ export default function ActualizarEstadoScreen() {
       // Navigate back after a delay
       setTimeout(() => {
         router.back();
-      }, 1500);
+      }, 2000);
     } catch (error) {
       console.error("Error updating status:", error);
       setAlertConfig({
